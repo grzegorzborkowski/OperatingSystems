@@ -12,7 +12,6 @@ int is_valid_mode_string(char *mode) {
 
 void list_directory(char *path, char *mode) {
     struct dirent *dirent;
-    struct stat fileStat;
     char *file_path;
     struct stat file_stat;
     int stat_result;
@@ -26,12 +25,12 @@ void list_directory(char *path, char *mode) {
 
     while ((dirent = readdir(pDir)) != NULL) {
         if (strcmp(dirent->d_name, ".") != 0 && strcmp(dirent->d_name, "..") != 0) {
-            // allocates memory for concatened path string and dirent name.
-            // 2 additional bytes for 2*(\n)
+            /* allocates memory for concatened path string and dirent name.
+             2 additional bytes for 2*(\n) */
            file_path = malloc(strlen(path) + strlen(dirent->d_name) + 2);
-            //writes path, dirent->d_name to file_path string
+            /* writes path, dirent->d_name to file_path string */
             sprintf(file_path, "%s/%s", path, dirent->d_name);
-            // retrievs stats about file_path and saves to file_stat
+            /* retrievs stats about file_path and saves to file_stat */
             stat_result = stat(file_path, &file_stat);
             if (stat_result < 0) {
                 printf("Error while retrieving stats\n");
@@ -41,8 +40,8 @@ void list_directory(char *path, char *mode) {
                 printf("Regular file: %s\n", file_path);
             }
             if(S_ISDIR(file_stat.st_mode)) {
-                // recursively execute this function for
-                // every directory found in tree
+                /* recursively execute this function for
+                 every directory found in tree */
                 list_directory(file_path, mode);
             }
             free(file_path);
@@ -54,7 +53,6 @@ void list_directory(char *path, char *mode) {
 
 int main(int argc, char **argv) {
     char *directory_path, *mode;
-    struct stat *buffer;
     int valid_flag;
 
     if (argc != 3) {
