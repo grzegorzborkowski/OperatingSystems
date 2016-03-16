@@ -10,6 +10,19 @@ int is_valid_mode_string(char *mode) {
     return 0;
 }
 
+int check_modes_matching(char *mode, struct stat *file_stat) {
+    int i;
+    int bits[9] = {S_IRUSR, S_IWUSR, S_IXUSR, S_IRGRP,
+                   S_IWGRP, S_IXGRP, S_IROTH, S_IWOTH, S_IXOTH};
+
+    for(i=0; i<9; i++) {
+        if(mode[i] != '-') {
+            if(!(file_stat->st_mode & bits[i])) return 0;
+        } else if(file_stat->st_mode & bits[i]) return 0;
+    }
+    return 1;
+}
+
 void list_directory(char *path, char *mode) {
     struct dirent *dirent;
     char *file_path;
@@ -37,7 +50,7 @@ void list_directory(char *path, char *mode) {
                 printf("Error while retrieving stats\n");
                 exit(1);
             }
-            if(S_ISREG(file_stat.st_mode)) {
+            if(S_ISREG(file_stat.st_mode) && check_modes_matching(mode, &file_stat)) {
                 strftime(time_buffer, sizeof(time_buffer), "%d.%m.%Y %H:%M:%S", localtime(&file_stat.st_atime));
                 printf("File name: %s\n", file_path);
                 printf("File size in bytes: %d\n", (int)file_stat.st_size);
@@ -57,6 +70,7 @@ void list_directory(char *path, char *mode) {
 
 
 int main(int argc, char **argv) {
+    // default files access mode: rw-rw-r--
     char *directory_path, *mode;
     int valid_flag;
 
