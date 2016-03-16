@@ -11,11 +11,4 @@
 #include <time.h>
 #include <ftw.h>
 
-
-
-
-
-
-
-
 #endif

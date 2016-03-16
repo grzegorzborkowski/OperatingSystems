@@ -70,7 +70,7 @@ void list_directory(char *path, char *mode) {
 
 
 int main(int argc, char **argv) {
-    // default files access mode: rw-rw-r--
+    /* default files access mode: rw-rw-r-- */
     char *directory_path, *mode;
     int valid_flag;
 
