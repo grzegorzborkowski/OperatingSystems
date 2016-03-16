@@ -1,15 +1,28 @@
 #include "libs.h"
 
-void run_with_system_functions(char *filename) {
+void sort_records() {
+
+}
+
+
+void run_with_system_functions(char *filename, unsigned record_length) {
     int file_descriptor;
+    int close_descriptor;
 
     file_descriptor = open(filename, O_RDWR);
 
     if (file_descriptor == -1) {
         printf("An error occured while opening the file\n");
-        return;
+        exit(1);
     }
 
+    sort_records(filename, record_length);
+
+    close_descriptor = close(file_descriptor);
+    if (close_descriptor == -1) {
+        printf("An error while closing the file\n");
+        exit(1);
+    }
 }
 
 void run_with_library_functions() {

@@ -3,21 +3,23 @@
 void generate_records(int file_descriptor,
                       unsigned record_length, unsigned record_count) {
     char *buffer;
-    int i;
+    int i, j;
     ssize_t write_result;
 
     srand(time(NULL));
 
-    buffer = (char *) malloc(sizeof(char) * record_count);
-    for (i = 0; i < record_count; i++) {
-        buffer[i] = rand() % 256;
+    buffer = (char *) malloc(sizeof(char) * record_length);
+    for (j = 0; j < record_count; j++) {
+        for (i = 0; i < record_length; i++) {
+            buffer[i] = rand() % 76 + 48;
+        }
+        write_result = write(file_descriptor, buffer, record_length);
+        if (write_result < 0) {
+            printf("Error occured while writing to file");
+            exit(1);
+        }
     }
-
-    write_result = write(file_descriptor, buffer, record_count*record_length);
-    if(write_result < 0) {
-        printf("Error occured while writing to file");
-        exit(1);
-    }
+    free(buffer);
 }
 
 
