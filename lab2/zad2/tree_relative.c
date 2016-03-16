@@ -16,6 +16,7 @@ void list_directory(char *path, char *mode) {
     struct stat file_stat;
     int stat_result;
     DIR *pDir;
+    char time_buffer[20];
 
     pDir = opendir(path);
     if (pDir == NULL) {
@@ -37,7 +38,11 @@ void list_directory(char *path, char *mode) {
                 exit(1);
             }
             if(S_ISREG(file_stat.st_mode)) {
-                printf("Regular file: %s\n", file_path);
+                strftime(time_buffer, sizeof(time_buffer), "%d.%m.%Y %H:%M:%S", localtime(&file_stat.st_atime));
+                printf("File name: %s\n", file_path);
+                printf("File size in bytes: %d\n", (int)file_stat.st_size);
+                printf("Last access %s\n", time_buffer);
+                printf("----------------------\n");
             }
             if(S_ISDIR(file_stat.st_mode)) {
                 /* recursively execute this function for
