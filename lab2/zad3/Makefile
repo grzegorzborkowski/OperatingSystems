@@ -6,3 +6,6 @@ all: lock
 
 lock: $(DEPS)
 	$(CC) $(FLAGS) lock.c -o lock
+	
+clean: 
+	rm lock
