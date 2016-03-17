@@ -88,7 +88,7 @@ void display_char(int open_descriptor, int offset) {
 
     fcntl_result = fcntl(open_descriptor, F_GETLK, &flock1);
     if(fcntl_result == -1) {
-        printf("Error while reading byte \n");
+        printf("Error while retrieving the lock \n");
         exit(EXIT_FAILURE);
     }
 
@@ -108,10 +108,36 @@ void display_char(int open_descriptor, int offset) {
 }
 
 void change_char(int open_descriptor, int offset, char character){
+    struct flock flock1;
+    int fcntl_result;
+    int write_byte;
 
+    flock1.l_type = F_WRLCK;
+    flock1.l_start = offset;
+    flock1.l_whence = SEEK_SET;
+    flock1.l_len = 1;
+
+    fcntl_result = fcntl(open_descriptor, F_GETLK, &flock1);
+    if(fcntl_result == -1) {
+        printf("Error while retrieving the lock \n");
+        exit(EXIT_FAILURE);
+     }
+
+     if(flock1.l_type == F_WRLCK) {
+        printf("Impossible to write the bytes.There is a write lock \n");
+        exit(EXIT_FAILURE);
+     }
+
+     lseek(open_descriptor, offset, SEEK_SET);
+     write_byte = write(open_descriptor, &character, 1);
+     if(write_byte == -1){
+        printf("Error while writing the byte\n");
+        exit(EXIT_FAILURE);
+     }
+     else {
+        printf("Sucessfuly written the byte\n");
+     }
 }
-
-
 
 void interactive_mode(int open_descriptor) {
     char option;
