@@ -1,5 +1,53 @@
 #include "libs.h"
 
+int compare_records(char *first, char *second) {
+    int f,s;
+    f = (int)first[0];
+    s = (int)second[0];
+    return f-s;
+}
+
+int get_with_system_functions(int file_descriptor, char *buffer, int record_length, int record_index) {
+    int bytes_read;
+    lseek(file_descriptor, record_index*record_length, SEEK_SET);
+    bytes_read = read(file_descriptor, buffer, record_length);
+    if(bytes_read != record_length) return -1;
+    return 0;
+}
+
+void insert_with_system_functions(int file_descriptor, char *record, int record_length, int record_index) {
+    int bytes_written;
+    lseek(file_descriptor, record_index*record_length, SEEK_SET);
+    bytes_written = write(file_descriptor, record, record_length);
+    if(bytes_written != record_length) return -1;
+    return 0;
+}
+
+void sort_with_system_functions(int file_descriptor, unsigned record_length){
+    char *current;
+    char *compared;
+    int i,j;
+
+    current = malloc(sizeof(char)*record_length);
+    compared = malloc(sizeof(char)*record_length);
+
+   i=1;
+   while(get_with_system_functions(file_descriptor, current, record_length, i) == 0) {
+        j = i-1;
+        get_with_system_functions(file_descriptor, compared, record_length, j);
+        while(j>=0 && compare_records(current, compared) < 0) {
+            insert_with_system_functions(file_descriptor, current ,record_length,j);
+            insert_with_system_functions(file_descriptor, compared, record_length, j+1);
+            j = j -1;
+            get_with_system_functions(file_descriptor, compared, record_length, j);
+        }
+        i+=1;
+   }
+    free(current);
+    free(compared);
+}
+
+
 void run_with_system_functions(char *filename, unsigned record_length) {
     int file_descriptor;
     int close_descriptor;
@@ -13,7 +61,7 @@ void run_with_system_functions(char *filename, unsigned record_length) {
 
     lseek(file_descriptor, 0, SEEK_SET);
 
-    sort_with_system_functions(filename, record_length);
+    sort_with_system_functions(file_descriptor, record_length);
 
     lseek(file_descriptor, 0, SEEK_SET);
     close_descriptor = close(file_descriptor);
@@ -23,32 +71,9 @@ void run_with_system_functions(char *filename, unsigned record_length) {
     }
 }
 
-int get_with_system_functions(int file_descriptor, char *buffer, int record_length, int record_index) {
-    int bytes_read;
-    lseek(file_descriptor, record_index*record_length, SEEK_SET);
-    bytes_read = read(file_descriptor, buffer, record_length);
-    if(bytes_read != record_length) return -1;
-    return 0;
-}
 
-void insert_with_system_functions(int file_descriptor, char *record, int record_length, int record_index) {
-    int bytes_written;
-    lseek(file_descriptor, record_index*record_length, SEEK_SET)
-    bytes_written = write(file_descriptor, record, record_length);
-    if(bytes_written != record_length) return -1;
-    return 0;
-}
 
-void sort_with_system_functions(char *filename, unsigned record_length){
-    char *current;
-    char *compared;
 
-    current = malloc(sizeof(char)*record_length);
-    compared = malloc(sizeof(char)*record_length);
-
-    free(current);
-    free(compared);
-}
 
 void run_with_library_functions(char *filename, unsigned record_length) {
     FILE *filepointer;
