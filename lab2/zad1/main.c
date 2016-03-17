@@ -15,7 +15,7 @@ int get_with_system_functions(int file_descriptor, char *buffer, int record_leng
     return 0;
 }
 
-void insert_with_system_functions(int file_descriptor, char *record, int record_length, int record_index) {
+int insert_with_system_functions(int file_descriptor, char *record, int record_length, int record_index) {
     int bytes_written;
     lseek(file_descriptor, record_index*record_length, SEEK_SET);
     bytes_written = write(file_descriptor, record, record_length);
@@ -27,6 +27,7 @@ void sort_with_system_functions(int file_descriptor, unsigned record_length){
     char *current;
     char *compared;
     int i,j;
+    int insert_result;
 
     current = malloc(sizeof(char)*record_length);
     compared = malloc(sizeof(char)*record_length);
@@ -36,8 +37,16 @@ void sort_with_system_functions(int file_descriptor, unsigned record_length){
         j = i-1;
         get_with_system_functions(file_descriptor, compared, record_length, j);
         while(j>=0 && compare_records(current, compared) < 0) {
-            insert_with_system_functions(file_descriptor, current ,record_length,j);
-            insert_with_system_functions(file_descriptor, compared, record_length, j+1);
+            insert_result = insert_with_system_functions(file_descriptor, current ,record_length,j);
+            if(insert_result == -1 ){
+                printf("error while inserting the record\n");
+                exit(EXIT_FAILURE);
+            }
+            insert_result = insert_with_system_functions(file_descriptor, compared, record_length, j+1);
+            if(insert_result == -1 ){
+                printf("error while inserting the record \n");
+                exit(EXIT_FAILURE);
+            }
             j = j -1;
             get_with_system_functions(file_descriptor, compared, record_length, j);
         }
@@ -71,9 +80,58 @@ void run_with_system_functions(char *filename, unsigned record_length) {
     }
 }
 
+int get_with_library_functions(FILE* filepointer, char *buffer, int record_length, int record_index) {
+    size_t read_records;
+    fseek(filepointer, record_length*record_index, SEEK_SET);
+    read_records = fread(buffer, record_length, 1, filepointer);
+    if(read_records != record_length) {
+        return -1;
+    }
+    return 0;
+}
 
+int insert_with_library_functions(FILE *filepointer, char *buffer, int record_length, int record_index) {
+    size_t written_records;
+    fseek(filepointer, record_length*record_index, SEEK_SET);
+    written_records = fwrite(buffer, record_length, 1, filepointer);
+    if (written_records != record_length) {
+        return -1;
+    }
+    return 0;
+}
 
+void sort_with_library_functions(FILE* filepointer, int record_length) {
+    char *current;
+    char *compared;
+    int i,j;
+    int insert_result;
 
+     current = malloc(sizeof(char)*record_length);
+     compared = malloc(sizeof(char)*record_length);
+
+       i=1;
+       while(get_with_library_functions(filepointer, current, record_length, i) == 0) {
+            j = i-1;
+            get_with_library_functions(filepointer, compared, record_length, j);
+            while(j>=0 && compare_records(current, compared) < 0) {
+                insert_result = insert_with_library_functions(filepointer, current ,record_length,j);
+                if(insert_result == -1 ){
+                    printf("error while inserting the record\n");
+                    exit(EXIT_FAILURE);
+                }
+                insert_result = insert_with_library_functions(filepointer, compared, record_length, j+1);
+                if(insert_result == -1 ){
+                    printf("error while inserting the record \n");
+                    exit(EXIT_FAILURE);
+                }
+                j = j -1;
+                get_with_library_functions(filepointer, compared, record_length, j);
+            }
+            i+=1;
+       }
+        free(current);
+        free(compared);
+}
 
 void run_with_library_functions(char *filename, unsigned record_length) {
     FILE *filepointer;
@@ -92,7 +150,7 @@ void run_with_library_functions(char *filename, unsigned record_length) {
         exit(1);
     }
 
-    sort_with_library_functions(filename, record_length);
+    sort_with_library_functions(filepointer, record_length);
     fseek_result = fseek(filepointer, 0, 0);
     if(fseek_result == -1) {
             printf("Error when moving to the beignning of the file\n");
@@ -100,9 +158,6 @@ void run_with_library_functions(char *filename, unsigned record_length) {
         }
 
     fclose(filepointer);
-}
-
-void sort_with_library_functions() {
 }
 
 int main(int argc, char **argv) {
