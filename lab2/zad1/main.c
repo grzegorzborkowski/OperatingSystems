@@ -1,10 +1,5 @@
 #include "libs.h"
 
-void sort_records() {
-    printf("Here sorting the records\n");
-}
-
-
 void run_with_system_functions(char *filename, unsigned record_length) {
     int file_descriptor;
     int close_descriptor;
@@ -18,7 +13,7 @@ void run_with_system_functions(char *filename, unsigned record_length) {
 
     lseek(file_descriptor, 0, SEEK_SET);
 
-    sort_records(filename, record_length);
+    sort_with_system_functions(filename, record_length);
 
     lseek(file_descriptor, 0, SEEK_SET);
     close_descriptor = close(file_descriptor);
@@ -26,6 +21,33 @@ void run_with_system_functions(char *filename, unsigned record_length) {
         printf("An error while closing the file\n");
         exit(1);
     }
+}
+
+int get_with_system_functions(int file_descriptor, char *buffer, int record_length, int record_index) {
+    int bytes_read;
+    lseek(file_descriptor, record_index*record_length, SEEK_SET);
+    bytes_read = read(file_descriptor, buffer, record_length);
+    if(bytes_read != record_length) return -1;
+    return 0;
+}
+
+void insert_with_system_functions(int file_descriptor, char *record, int record_length, int record_index) {
+    int bytes_written;
+    lseek(file_descriptor, record_index*record_length, SEEK_SET)
+    bytes_written = write(file_descriptor, record, record_length);
+    if(bytes_written != record_length) return -1;
+    return 0;
+}
+
+void sort_with_system_functions(char *filename, unsigned record_length){
+    char *current;
+    char *compared;
+
+    current = malloc(sizeof(char)*record_length);
+    compared = malloc(sizeof(char)*record_length);
+
+    free(current);
+    free(compared);
 }
 
 void run_with_library_functions(char *filename, unsigned record_length) {
@@ -45,7 +67,7 @@ void run_with_library_functions(char *filename, unsigned record_length) {
         exit(1);
     }
 
-    sort_records(filename, record_length);
+    sort_with_library_functions(filename, record_length);
     fseek_result = fseek(filepointer, 0, 0);
     if(fseek_result == -1) {
             printf("Error when moving to the beignning of the file\n");
@@ -53,6 +75,9 @@ void run_with_library_functions(char *filename, unsigned record_length) {
         }
 
     fclose(filepointer);
+}
+
+void sort_with_library_functions() {
 }
 
 int main(int argc, char **argv) {
