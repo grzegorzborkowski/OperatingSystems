@@ -10,5 +10,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <time.h>
+#include <sys/times.h>
+
+typedef struct tms tms_t;
 
 #endif

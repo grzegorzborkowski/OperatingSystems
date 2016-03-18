@@ -1,5 +1,11 @@
 #include "libs.h"
 
+void print_times(tms_t *start, tms_t *end) {
+    double CLK = sysconf(_SC_CLK_TCK);
+    printf("User time: %f\n",(end->tms_utime - start->tms_utime ) / CLK);
+    printf("System time : %f\n", (end->tms_stime - start->tms_stime) / CLK);
+}
+
 int compare_records(char *first, char *second) {
     int f,s;
     f = (int)first[0];
@@ -28,6 +34,7 @@ void sort_with_system_functions(int file_descriptor, unsigned record_length){
     char *compared;
     int i,j;
     int insert_result;
+
 
     current = malloc(sizeof(char)*record_length);
     compared = malloc(sizeof(char)*record_length);
@@ -60,6 +67,8 @@ void sort_with_system_functions(int file_descriptor, unsigned record_length){
 void run_with_system_functions(char *filename, unsigned record_length) {
     int file_descriptor;
     int close_descriptor;
+    tms_t tms_start;
+    tms_t tms_end;
 
     file_descriptor = open(filename, O_RDWR);
 
@@ -69,8 +78,10 @@ void run_with_system_functions(char *filename, unsigned record_length) {
     }
 
     lseek(file_descriptor, 0, SEEK_SET);
-
+    times(&tms_start);
     sort_with_system_functions(file_descriptor, record_length);
+    times(&tms_end);
+    print_times(&tms_start, &tms_end);
 
     lseek(file_descriptor, 0, SEEK_SET);
     close_descriptor = close(file_descriptor);
@@ -136,6 +147,8 @@ void sort_with_library_functions(FILE* filepointer, int record_length) {
 void run_with_library_functions(char *filename, unsigned record_length) {
     FILE *filepointer;
     int fseek_result;
+    tms_t start;
+    tms_t end;
 
     filepointer = fopen(filename, "r+");
     if(filepointer == NULL) {
@@ -150,7 +163,10 @@ void run_with_library_functions(char *filename, unsigned record_length) {
         exit(1);
     }
 
+    times(&start);
     sort_with_library_functions(filepointer, record_length);
+    times(&end);
+    print_times(&start, &end);
     fseek_result = fseek(filepointer, 0, 0);
     if(fseek_result == -1) {
             printf("Error when moving to the beignning of the file\n");
