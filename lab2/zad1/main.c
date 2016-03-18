@@ -35,7 +35,6 @@ void sort_with_system_functions(int file_descriptor, unsigned record_length){
     int i,j;
     int insert_result;
 
-
     current = malloc(sizeof(char)*record_length);
     compared = malloc(sizeof(char)*record_length);
 
@@ -95,7 +94,7 @@ int get_with_library_functions(FILE* filepointer, char *buffer, int record_lengt
     size_t read_records;
     fseek(filepointer, record_length*record_index, SEEK_SET);
     read_records = fread(buffer, record_length, 1, filepointer);
-    if(read_records != record_length) {
+    if(read_records != 1) {
         return -1;
     }
     return 0;
@@ -105,15 +104,11 @@ int insert_with_library_functions(FILE *filepointer, char *buffer, int record_le
     size_t written_records;
     fseek(filepointer, record_length*record_index, SEEK_SET);
     written_records = fwrite(buffer, record_length, 1, filepointer);
-    if (written_records != record_length) {
-        return -1;
-    }
-    return 0;
+    return written_records;
 }
 
 void sort_with_library_functions(FILE* filepointer, int record_length) {
-    char *current;
-    char *compared;
+    char *current, *compared;
     int i,j;
     int insert_result;
 
@@ -156,7 +151,6 @@ void run_with_library_functions(char *filename, unsigned record_length) {
         exit(1);
     }
 
-
     fseek_result = fseek(filepointer, 0, 0);
     if(fseek_result == -1) {
         printf("Error when moving to the beignning of the file\n");
@@ -171,7 +165,7 @@ void run_with_library_functions(char *filename, unsigned record_length) {
     if(fseek_result == -1) {
             printf("Error when moving to the beignning of the file\n");
             exit(1);
-        }
+    }
 
     fclose(filepointer);
 }
@@ -205,9 +199,13 @@ int main(int argc, char **argv) {
     }
 
     if (strcmp(mode, "sys") == 0) {
+        printf("System test, record length %d\n", record_length);
         run_with_system_functions(filename, record_length);
+        printf("\n");
     } else if (strcmp(mode, "lib") == 0) {
+        printf("Library test, record length %d\n", record_length);
         run_with_library_functions(filename, record_length);
+        printf("\n");
     } else {
         printf("Invalid mode. Use either sys or lib\n");
         exit(1);

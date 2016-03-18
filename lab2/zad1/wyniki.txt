@@ -1,0 +1,72 @@
+System test, record length 4
+User time: 0.010000
+System time : 0.400000
+
+Library test, record length 4
+User time: 0.100000
+System time : 0.490000
+
+System test, record length 4
+User time: 0.660000
+System time : 9.970000
+
+Library test, record length 4
+User time: 2.360000
+System time : 12.650000
+
+System test, record length 4
+User time: 3.160000
+System time : 47.020000
+
+Library test, record length 4
+User time: 11.160000
+System time : 54.490000
+
+System test, record length 512
+User time: 0.100000
+System time : 2.000000
+
+Library test, record length 512
+User time: 0.480000
+System time : 2.050000
+
+System test, record length 512
+User time: 0.420000
+System time : 6.330000
+
+Library test, record length 512
+User time: 1.870000
+System time : 8.310000
+
+System test, record length 4096
+User time: 0.140000
+System time : 1.910000
+
+Library test, record length 4096
+User time: 0.290000
+System time : 2.380000
+
+System test, record length 4096
+User time: 0.650000
+System time : 13.760000
+
+Library test, record length 4096
+User time: 2.120000
+System time : 14.710000
+
+System test, record length 8192
+User time: 0.180000
+System time : 5.950000
+
+Library test, record length 8192
+User time: 0.480000
+System time : 5.910000
+
+System test, record length 8192
+User time: 0.750000
+System time : 22.180000
+
+Library test, record length 8192
+User time: 1.930000
+System time : 23.340000
+
