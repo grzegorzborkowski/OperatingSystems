@@ -19,7 +19,7 @@ int main(int argc, char** argv) {
     N = atoi(argv[1]);
     for(i=0; i<N; i++) {
         child_start = times(&tms_child);
-        pid = fork();
+        pid = vfork();
        /* child process */
         if(pid == 0) {
             counter += 1;
