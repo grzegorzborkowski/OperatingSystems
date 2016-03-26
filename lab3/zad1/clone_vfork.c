@@ -38,8 +38,10 @@ int main(int argc, char **argv) {
         child_start = times(&tms_child);
         /* FLAGS specifies termination signal sent to parent when the child dies
         OR what is shared between the calling process and the child process */
-        /* SIGCHLD - signal sent when child terminates */
-        pid = clone(process_function, stackTop, SIGCHLD, NULL);
+        /* CLONE_VM : processes share memory space */
+        /* CLONE_VFORK : firstly child process, then parent process */
+        /* SIGCHLD : signal sent when child terminates */
+        pid = clone(process_function, stackTop, CLONE_VM | CLONE_VFORK | SIGCHLD, NULL);
         if(pid == -1) {
             printf("Error in clone function \n");
             exit(1);

@@ -14,5 +14,6 @@
 typedef struct tms tms_t;
 
 void print_times(clock_t real, tms_t *tms_start, tms_t * tms_end);
+int process_function(void *arg);
 
 #endif
