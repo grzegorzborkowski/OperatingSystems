@@ -12,8 +12,13 @@ int process_function(void *arg) {
 int main(int argc, char **argv) {
     char *stack; /* Start of stack buffer */
     char *stackTop; /* End of stack buffer */
+    tms_t tms_start, tms_end, tms_child;
+    clock_t start, end, child_start, child_end;
+    double children_real;
     int N, i, status;
     pid_t pid, wait_pid;
+
+    start = times(&tms_start);
 
     if (argc !=2) {
             printf("Unsupported number of arguments \n");
@@ -30,6 +35,7 @@ int main(int argc, char **argv) {
 
     N = atoi(argv[1]);
     for(i=0; i<N; i++) {
+        child_start = times(&tms_child);
         /* FLAGS specifies termination signal sent to parent when the child dies
         OR what is shared between the calling process and the child process */
         pid = clone(process_function, stackTop, SIGCHLD, NULL);
@@ -44,8 +50,13 @@ int main(int argc, char **argv) {
             printf("Error in wait pid function \n");
             exit(1);
         }
+        child_end = times(&tms_child);
+        children_real += (child_end - child_start) / (double)(sysconf(_SC_CLK_TCK));
     }
     printf("Counter %d\n", counter);
+    end = times(&tms_end);
+    print_times(end-start, &tms_start, &tms_end);
+    printf("Children real time %f\n", children_real);
     free(stack);
     return 0;
 }
