@@ -15,6 +15,10 @@ clone_fork: clone_fork.c lib.c
 clone_vfork: clone_vfork.c lib.c
 	$(CC) $(FLAGS) lib.c clone_vfork.c -o clone_vfork
 
+generate_test_data:
+	bash generate_tests_data.sh
+
+
 clean:
 	rm main_fork
 	rm main_vfork
