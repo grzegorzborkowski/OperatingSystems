@@ -1,7 +1,6 @@
 #include "fcounter.h"
 
 void run(char* dir, int wait_flag, int display_flag) {
-
 }
 
 int main(int argc, char **argv) {

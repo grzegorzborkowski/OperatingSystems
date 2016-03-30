@@ -8,4 +8,3 @@ fcounter: fcounter.c fcounter.h
 
 clean:
 	rm fcounter
-
