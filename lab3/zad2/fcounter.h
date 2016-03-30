@@ -8,6 +8,7 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <stdlib.h>
+#include <sys/wait.h>
 
 typedef struct dirent dirent_t;
 
