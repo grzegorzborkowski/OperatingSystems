@@ -7,4 +7,6 @@
 #include <stdlib.h>
 #include <errno.h>
 
+typedef struct sigaction sigaction_t;
+
 #endif
