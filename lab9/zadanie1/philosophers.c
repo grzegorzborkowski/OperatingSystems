@@ -49,6 +49,7 @@ void *philosopher_thread(void * arg) {
 
 void sighandler(int signum)
 {
+    srand(time(NULL));
     int i;
     printf("Caught signal, coming out...\n");
 
@@ -82,7 +83,6 @@ void sighandler(int signum)
 int main(int argc, char **argv) {
     int i;
 
-    signal(SIGINT, sighandler);
     /* init variables */
 
     /* second argument(0): pshared (the semaphore is shared between threads */
@@ -109,6 +109,8 @@ int main(int argc, char **argv) {
             print_errno_quit("Error when creating philosophers threads");
         }
     }
+
+    signal(SIGINT, sighandler);
 
     while(1) {
 
